@@ -5,6 +5,9 @@ class Drama {
     required this.origin,
     required this.tags,
     required this.totalEpisodes,
+    required this.posterUrl,
+    required this.synopsis,
+    required this.rating,
     this.watchedEpisodes = 0,
   });
 
@@ -13,6 +16,11 @@ class Drama {
   final String origin;
   final List<String> tags;
   final int totalEpisodes;
+  final String posterUrl;
+  final String synopsis;
+
+  /// Rating rata-rata skala 0-5.
+  final double rating;
   final int watchedEpisodes;
 
   bool get isFinished => watchedEpisodes >= totalEpisodes;
@@ -27,6 +35,9 @@ class Drama {
       origin: origin,
       tags: tags,
       totalEpisodes: totalEpisodes,
+      posterUrl: posterUrl,
+      synopsis: synopsis,
+      rating: rating,
       watchedEpisodes: watchedEpisodes ?? this.watchedEpisodes,
     );
   }

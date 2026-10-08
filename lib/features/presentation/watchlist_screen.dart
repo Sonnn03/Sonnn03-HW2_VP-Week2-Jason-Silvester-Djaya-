@@ -134,7 +134,7 @@ class _WatchlistScreenState extends State<WatchlistScreen> {
         final drama = dramas[index];
         return DramaCard(
           drama: drama,
-          onEpisodeWatched: () => _onEpisodeWatched(drama.id),
+          onEpisodeWatched: () => _onEpisodeWatched(drama.id), onTap: () {  },
         );
       },
     );

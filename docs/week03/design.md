@@ -1,0 +1,1 @@
+Seed colour yang dipilih adalah rose/crimson ( #B02A5B). Pengguna aplikasi ini adalah penonton drama Asia, yang genre favoritnya didominasi romansa dan fantasi. Warna hangat kemerahan memberi kesan emosional dan romantis yang sesuai dengan konteks tersebut. Warna ini juga punya kontras yang baik pada skema terang maupun gelap, penting karena watchlist sering dibuka malam hari.
