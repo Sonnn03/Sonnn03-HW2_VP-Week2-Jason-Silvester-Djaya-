@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:homework2/core/app_spacing.dart';
+import 'package:homework2/core/theme/app_spacing.dart';
 
 class EpisodeProgress extends StatelessWidget {
   const EpisodeProgress({
@@ -23,6 +23,8 @@ class EpisodeProgress extends StatelessWidget {
         Text(
           '$watched / $total episode',
           style: Theme.of(context).textTheme.labelMedium,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
       ],
     );

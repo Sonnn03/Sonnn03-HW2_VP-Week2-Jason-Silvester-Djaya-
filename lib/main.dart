@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:homework2/core/app_theme.dart';
+import 'package:homework2/core/theme/app_theme.dart';
+import 'package:homework2/features/data/drama_repository.dart';
 import 'package:homework2/features/presentation/watchlist_screen.dart';
 
+/// Ganti untuk menjalankan tes: normal | longText | empty | many.
+/// Kembalikan ke normal sebelum commit.
+final DramaScenario _scenario = DramaScenario.normal;
 
 void main() => runApp(const DramaWatchlistApp());
 
@@ -15,7 +19,9 @@ class DramaWatchlistApp extends StatelessWidget {
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: ThemeMode.system,
-      home: const WatchlistScreen(),
+      home: WatchlistScreen(
+        repository: DramaRepository(scenario: _scenario),
+      ),
     );
   }
 }

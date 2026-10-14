@@ -1,16 +1,61 @@
 import '../models/drama.dart';
 import '../models/review.dart';
 
+/// Skenario data untuk menguji layout responsif.
+enum DramaScenario { normal, longText, empty, many }
+
 class DramaRepository {
-  const DramaRepository();
+  const DramaRepository({this.scenario = DramaScenario.normal});
+
+  final DramaScenario scenario;
+
+  List<Review> get _reviewPool => [
+    Review(
+      author: 'Alya',
+      rating: 5,
+      comment: 'Cerita yang menarik dan sangat menghibur.',
+      date: '1 hari lalu',
+    ),
+    Review(
+      author: 'Bima',
+      rating: 4,
+      comment: 'Alur ceritanya bagus dan para pemainnya hebat.',
+      date: '3 hari lalu',
+    ),
+    Review(
+      author: 'Citra',
+      rating: 5,
+      comment: 'Salah satu drama favorit saya.',
+      date: '1 minggu lalu',
+    ),
+  ];
 
   Future<List<Drama>> fetchDramas() async {
     await Future<void>.delayed(const Duration(milliseconds: 900));
-    return _seed;
+    switch (scenario) {
+      case DramaScenario.normal:
+        return _seed;
+      case DramaScenario.empty:
+        return const <Drama>[];
+      case DramaScenario.longText:
+        return _longTextDramas();
+      case DramaScenario.many:
+        return _manyDramas();
+    }
   }
 
   Future<List<Review>> fetchReviews(String dramaId) async {
     await Future<void>.delayed(const Duration(milliseconds: 600));
+    if (scenario == DramaScenario.longText) {
+      return [
+        Review(
+          author: 'Penulis review dengan nama yang sangat panjang ' * 4,
+          rating: 4,
+          comment: 'Komentar panjang sekali, ' * 20,
+          date: '2 hari lalu',
+        ),
+      ];
+    }
     final start = (int.tryParse(dramaId) ?? 0) % _reviewPool.length;
     return [
       for (var i = 0; i < 3; i++) _reviewPool[(start + i) % _reviewPool.length],
@@ -31,6 +76,49 @@ class DramaRepository {
 }
 
 String _poster(String seed) => 'https://picsum.photos/seed/$seed/400/600';
+
+/// Test "Long text": judul 200 karakter (satu dengan spasi, satu tanpa spasi).
+List<Drama> _longTextDramas() {
+  final spaced = ('Judul sangat panjang sekali ' * 10).substring(0, 200);
+  final unbroken = 'W' * 200;
+  return [
+    for (final (i, title) in [spaced, unbroken].indexed)
+      Drama(
+        id: '${i + 1}',
+        title: title,
+        origin: 'K-Drama dengan asal yang juga sangat panjang · 2022 ' * 3,
+        tags: [
+          'Tag-yang-sangat-panjang-sekali-sampai-melebar-keluar-layar',
+          'Fantasy',
+          'Romance',
+        ],
+        totalEpisodes: 36,
+        watchedEpisodes: 12,
+        posterUrl: _poster('long-$i'),
+        rating: 4.5,
+        synopsis: 'Sinopsis yang sangat panjang sekali. ' * 30,
+      ),
+    ..._seed.take(2),
+  ];
+}
+
+/// Test "Long list": 500 item.
+List<Drama> _manyDramas() {
+  return List.generate(500, (i) {
+    final base = _seed[i % _seed.length];
+    return Drama(
+      id: '${i + 1}',
+      title: '${base.title} #${i + 1}',
+      origin: base.origin,
+      tags: base.tags,
+      totalEpisodes: base.totalEpisodes,
+      watchedEpisodes: base.watchedEpisodes,
+      posterUrl: _poster('drama-${i + 1}'),
+      rating: base.rating,
+      synopsis: base.synopsis,
+    );
+  });
+}
 
 final List<Drama> _seed = [
   Drama(
@@ -69,82 +157,10 @@ final List<Drama> _seed = [
     totalEpisodes: 50,
     watchedEpisodes: 3,
     posterUrl: _poster('drama-3'),
-    rating: 4.8,
-    synopsis:
-        'Dua kultivator dengan sifat bertolak belakang bekerja sama '
-        'mengungkap konspirasi besar yang mengancam dunia persilatan, '
-        'sambil menjaga persahabatan yang diuji waktu.',
-  ),
-  Drama(
-    id: '4',
-    title: 'Crash Landing on You',
-    origin: 'K-Drama · 2019',
-    tags: ['Rom-Com', 'Enemies-to-Lovers'],
-    totalEpisodes: 16,
-    posterUrl: _poster('drama-4'),
-    rating: 4.9,
-    synopsis:
-        'Pewaris perusahaan asal Korea Selatan mendarat darurat di Korea '
-        'Utara dengan paralayang dan bertemu seorang perwira yang '
-        'melindunginya diam-diam.',
-  ),
-  Drama(
-    id: '5',
-    title: 'Moon Embracing the Sun: Extended Director Cut Special Edition',
-    origin: 'K-Drama · 2012',
-    tags: ['Historical', 'Fantasy'],
-    totalEpisodes: 20,
-    watchedEpisodes: 7,
-    posterUrl: _poster('drama-5'),
-    rating: 4.4,
-    synopsis:
-        'Kisah cinta seorang raja dan gadis shaman yang kehilangan ingatan, '
-        'dibalut intrik istana dan kutukan yang memisahkan mereka.',
-  ),
-  Drama(
-    id: '6',
-    title: 'Eternal Love',
-    origin: 'C-Drama · 2017',
-    tags: ['Xianxia', 'Historical'],
-    totalEpisodes: 58,
-    posterUrl: _poster('drama-6'),
     rating: 4.7,
     synopsis:
-        'Dewi yang menyamar sebagai pria dan Dewa Perang yang dingin '
-        'terikat cinta lintas tiga kehidupan, dari dunia langit hingga '
-        'dunia fana.',
-  ),
-];
-
-const List<Review> _reviewPool = [
-  Review(
-    author: 'Dinda',
-    rating: 5,
-    comment: 'Ceritanya bikin nagih, chemistry pemeran utamanya juara!',
-    date: '2 hari lalu',
-  ),
-  Review(
-    author: 'Raka',
-    rating: 4,
-    comment: 'Visual dan OST-nya bagus. Pertengahan agak lambat tapi worth it.',
-    date: '1 minggu lalu',
-  ),
-  Review(
-    author: 'Salsa',
-    rating: 4.5,
-    comment: 'Sudah nonton ulang dua kali dan tetap seru.',
-    date: '2 minggu lalu',
-  ),
-  Review(
-    author: 'Bima',
-    rating: 3.5,
-    comment: 'Bagus, tapi endingnya terasa agak terburu-buru.',
-    date: '3 minggu lalu',
-  ),
-  Review(
-    author: 'Citra',
-    rating: 5,
-    comment: 'Salah satu drama terbaik yang pernah saya tonton. Wajib masuk list!',
-    date: '1 bulan lalu',
+        'Dua pria dari latar belakang yang berbeda, yang saling bermusuhan '
+        'namun terikat oleh takdir, berjuang untuk memperjuangkan keadilan '
+        'dan kebenaran di dunia yang penuh dengan kekerasan dan ketidakadilan.',
   ),
 ];

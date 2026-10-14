@@ -1,5 +1,8 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
-import 'package:homework2/core/app_spacing.dart';
+import 'package:homework2/core/theme/app_spacing.dart';
+import 'package:homework2/features/presentation/widgets/drama_detail_screen.dart';
 
 import '../data/drama_repository.dart';
 import '../models/drama.dart';
@@ -50,6 +53,11 @@ class _WatchlistScreenState extends State<WatchlistScreen> {
     });
   }
 
+  void _reload() {
+    setState(() => _isLoading = true);
+    _load();
+  }
+
   List<String> get _allTags {
     final tags = <String>{for (final d in _dramas) ...d.tags};
     return tags.toList()..sort();
@@ -90,53 +98,127 @@ class _WatchlistScreenState extends State<WatchlistScreen> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('My Drama Watchlist')),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            child: WatchlistSearchBar(
-              controller: _searchController,
-              onChanged: _onQueryChanged,
-            ),
-          ),
-          TagFilterChips(
-            tags: _allTags,
-            selectedTag: _selectedTag,
-            onSelected: _onTagSelected,
-          ),
-          Expanded(child: _buildBody()),
-        ],
+  void _openDetail(Drama drama) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => DramaDetailScreen(
+          drama: drama,
+          allDramas: _dramas,
+          onEpisodeWatched: _onEpisodeWatched,
+          repository: widget.repository,
+        ),
       ),
     );
   }
 
-  Widget _buildBody() {
-    if (_isLoading) return const WatchlistLoading();
+  /// Breakpoint yang MENGUBAH struktur layout: list -> grid 2 -> grid 3.
+  int _columnsFor(double width) {
+    if (width >= 900) return 3;
+    if (width >= 600) return 2;
+    return 1;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('My Drama Watchlist')),
+      body: SafeArea(
+        top: false,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final columns = _columnsFor(constraints.maxWidth);
+            // Satu scroll view untuk semuanya: header ikut ter-scroll sehingga
+            // field pencarian tetap terlihat saat keyboard terbuka di layar pendek.
+            return CustomScrollView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    child: WatchlistSearchBar(
+                      controller: _searchController,
+                      onChanged: _onQueryChanged,
+                    ),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: TagFilterChips(
+                    tags: _allTags,
+                    selectedTag: _selectedTag,
+                    onSelected: _onTagSelected,
+                  ),
+                ),
+                ..._buildContent(columns),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _buildContent(int columns) {
+    if (_isLoading) {
+      return const [
+        SliverFillRemaining(hasScrollBody: false, child: WatchlistLoading()),
+      ];
+    }
 
     final dramas = _visibleDramas;
     if (dramas.isEmpty) {
-      return WatchlistEmptyState(
-        hasFilters: _hasFilters,
-        onClearFilters: _clearFilters,
+      return [
+        SliverFillRemaining(
+          hasScrollBody: false,
+          child: WatchlistEmptyState(
+            hasFilters: _hasFilters,
+            onClearFilters: _clearFilters,
+            onReload: _reload,
+          ),
+        ),
+      ];
+    }
+
+    Widget cardAt(int index) {
+      final drama = dramas[index];
+      return DramaCard(
+        drama: drama,
+        onTap: () => _openDetail(drama),
+        onEpisodeWatched: () => _onEpisodeWatched(drama.id),
       );
     }
 
-    return ListView.separated(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      itemCount: dramas.length,
-      separatorBuilder: (context, index) =>
-          const SizedBox(height: AppSpacing.sm),
-      itemBuilder: (context, index) {
-        final drama = dramas[index];
-        return DramaCard(
-          drama: drama,
-          onEpisodeWatched: () => _onEpisodeWatched(drama.id), onTap: () {  },
-        );
-      },
-    );
+    if (columns == 1) {
+      // Phone: list (lazy, tanpa shrinkWrap).
+      return [
+        SliverPadding(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          sliver: SliverList.separated(
+            itemCount: dramas.length,
+            separatorBuilder: (context, index) =>
+                const SizedBox(height: AppSpacing.sm),
+            itemBuilder: (context, index) => cardAt(index),
+          ),
+        ),
+      ];
+    }
+
+    // Tablet / landscape lebar: grid (lazy). Tinggi sel mengikuti text scale.
+    final textScale =
+        math.max(1.0, MediaQuery.textScalerOf(context).scale(16) / 16);
+    return [
+      SliverPadding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        sliver: SliverGrid.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: columns,
+            crossAxisSpacing: AppSpacing.md,
+            mainAxisSpacing: AppSpacing.md,
+            mainAxisExtent: 176 * textScale,
+          ),
+          itemCount: dramas.length,
+          itemBuilder: (context, index) => cardAt(index),
+        ),
+      ),
+    ];
   }
 }

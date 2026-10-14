@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:homework2/core/app_spacing.dart';
+import 'package:homework2/core/theme/app_spacing.dart';
 
 import '../../models/drama.dart';
 import 'drama_poster.dart';
@@ -52,6 +52,8 @@ class DramaCard extends StatelessWidget {
                       '${drama.origin}  ·  ★ ${drama.rating.toStringAsFixed(1)}',
                       style: textTheme.bodySmall
                           ?.copyWith(color: colors.onSurfaceVariant),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(
