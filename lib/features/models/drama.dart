@@ -19,7 +19,6 @@ class Drama {
   final String posterUrl;
   final String synopsis;
 
-  /// Rating rata-rata skala 0-5.
   final double rating;
   final int watchedEpisodes;
 

@@ -3,8 +3,6 @@ import 'package:homework2/core/theme/app_theme.dart';
 import 'package:homework2/features/data/drama_repository.dart';
 import 'package:homework2/features/presentation/watchlist_screen.dart';
 
-/// Ganti untuk menjalankan tes: normal | longText | empty | many.
-/// Kembalikan ke normal sebelum commit.
 final DramaScenario _scenario = DramaScenario.normal;
 
 void main() => runApp(const DramaWatchlistApp());

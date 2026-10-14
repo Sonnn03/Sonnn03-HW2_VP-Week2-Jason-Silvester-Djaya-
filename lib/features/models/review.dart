@@ -8,7 +8,6 @@ class Review {
 
   final String author;
 
-  /// Skala 0-5.
   final double rating;
   final String comment;
   final String date;

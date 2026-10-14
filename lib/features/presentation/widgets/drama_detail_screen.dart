@@ -87,10 +87,8 @@ class _DramaDetailScreenState extends State<DramaDetailScreen> {
     );
   }
 
-  // Phone: satu kolom dengan header poster yang menyusut.
   Widget _buildNarrow(BoxConstraints constraints, List<Drama> similar) {
     final colors = Theme.of(context).colorScheme;
-    // Di landscape (layar pendek) poster tidak boleh memakan seluruh layar.
     final headerHeight = (constraints.maxHeight * 0.45).clamp(160.0, 360.0);
 
     return CustomScrollView(
@@ -127,7 +125,6 @@ class _DramaDetailScreenState extends State<DramaDetailScreen> {
     );
   }
 
-  // Tablet / landscape lebar: dua panel (poster | info).
   Widget _buildWide(List<Drama> similar) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.lg),
@@ -276,7 +273,6 @@ class _DramaDetailScreenState extends State<DramaDetailScreen> {
   }
 }
 
-/// Teks panjang yang terpotong dengan maxLines + tombol "Selengkapnya".
 class _ExpandableText extends StatefulWidget {
   const _ExpandableText({
     required this.text,

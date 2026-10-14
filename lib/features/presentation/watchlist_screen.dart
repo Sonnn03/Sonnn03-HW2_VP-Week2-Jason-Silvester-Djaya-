@@ -25,7 +25,6 @@ class WatchlistScreen extends StatefulWidget {
 }
 
 class _WatchlistScreenState extends State<WatchlistScreen> {
-  // All screen state lives here; child widgets only receive values + callbacks.
   final TextEditingController _searchController = TextEditingController();
   List<Drama> _dramas = const [];
   bool _isLoading = true;
@@ -111,7 +110,6 @@ class _WatchlistScreenState extends State<WatchlistScreen> {
     );
   }
 
-  /// Breakpoint yang MENGUBAH struktur layout: list -> grid 2 -> grid 3.
   int _columnsFor(double width) {
     if (width >= 900) return 3;
     if (width >= 600) return 2;
@@ -127,8 +125,6 @@ class _WatchlistScreenState extends State<WatchlistScreen> {
         child: LayoutBuilder(
           builder: (context, constraints) {
             final columns = _columnsFor(constraints.maxWidth);
-            // Satu scroll view untuk semuanya: header ikut ter-scroll sehingga
-            // field pencarian tetap terlihat saat keyboard terbuka di layar pendek.
             return CustomScrollView(
               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               slivers: [
@@ -188,7 +184,6 @@ class _WatchlistScreenState extends State<WatchlistScreen> {
     }
 
     if (columns == 1) {
-      // Phone: list (lazy, tanpa shrinkWrap).
       return [
         SliverPadding(
           padding: const EdgeInsets.all(AppSpacing.md),
@@ -202,7 +197,6 @@ class _WatchlistScreenState extends State<WatchlistScreen> {
       ];
     }
 
-    // Tablet / landscape lebar: grid (lazy). Tinggi sel mengikuti text scale.
     final textScale =
         math.max(1.0, MediaQuery.textScalerOf(context).scale(16) / 16);
     return [

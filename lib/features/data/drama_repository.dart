@@ -1,7 +1,6 @@
 import '../models/drama.dart';
 import '../models/review.dart';
 
-/// Skenario data untuk menguji layout responsif.
 enum DramaScenario { normal, longText, empty, many }
 
 class DramaRepository {
@@ -62,7 +61,6 @@ class DramaRepository {
     ];
   }
 
-  /// Drama serupa = drama lain yang paling banyak berbagi tag.
   List<Drama> similarTo(Drama drama, List<Drama> all) {
     final scored = <(Drama, int)>[];
     for (final other in all) {
@@ -77,7 +75,6 @@ class DramaRepository {
 
 String _poster(String seed) => 'https://picsum.photos/seed/$seed/400/600';
 
-/// Test "Long text": judul 200 karakter (satu dengan spasi, satu tanpa spasi).
 List<Drama> _longTextDramas() {
   final spaced = ('Judul sangat panjang sekali ' * 10).substring(0, 200);
   final unbroken = 'W' * 200;
@@ -102,7 +99,6 @@ List<Drama> _longTextDramas() {
   ];
 }
 
-/// Test "Long list": 500 item.
 List<Drama> _manyDramas() {
   return List.generate(500, (i) {
     final base = _seed[i % _seed.length];
