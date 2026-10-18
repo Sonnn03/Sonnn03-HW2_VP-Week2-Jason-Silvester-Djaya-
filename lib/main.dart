@@ -3,7 +3,7 @@ import 'package:homework2/core/theme/app_theme.dart';
 import 'package:homework2/features/data/drama_repository.dart';
 import 'package:homework2/features/presentation/watchlist_screen.dart';
 
-final DramaScenario _scenario = DramaScenario.normal;
+const DramaScenario _scenario = DramaScenario.normal;
 
 void main() => runApp(const DramaWatchlistApp());
 
@@ -17,7 +17,7 @@ class DramaWatchlistApp extends StatelessWidget {
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: ThemeMode.system,
-      home: WatchlistScreen(
+      home: const WatchlistScreen(
         repository: DramaRepository(scenario: _scenario),
       ),
     );

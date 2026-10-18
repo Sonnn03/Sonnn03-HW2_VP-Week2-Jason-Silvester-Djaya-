@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 abstract final class AppTheme {
-
   static const Color _seed = Color(0xFFB02A5B);
 
   static ThemeData get light => _build(Brightness.light);
@@ -16,6 +15,8 @@ abstract final class AppTheme {
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
+      // Menjamin area sentuh >= 48 dp di semua platform.
+      materialTapTargetSize: MaterialTapTargetSize.padded,
       appBarTheme: AppBarTheme(
         centerTitle: false,
         backgroundColor: scheme.surface,

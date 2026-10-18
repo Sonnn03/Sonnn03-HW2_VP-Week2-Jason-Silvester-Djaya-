@@ -9,6 +9,7 @@ class Drama {
     required this.synopsis,
     required this.rating,
     this.watchedEpisodes = 0,
+    this.episodeMinutes = 60,
   });
 
   final String id;
@@ -22,10 +23,14 @@ class Drama {
   final double rating;
   final int watchedEpisodes;
 
+  final int episodeMinutes;
+
   bool get isFinished => watchedEpisodes >= totalEpisodes;
 
   double get progress =>
       totalEpisodes == 0 ? 0 : watchedEpisodes / totalEpisodes;
+
+  int get watchedMinutes => watchedEpisodes * episodeMinutes;
 
   Drama copyWith({int? watchedEpisodes}) {
     return Drama(
@@ -38,6 +43,7 @@ class Drama {
       synopsis: synopsis,
       rating: rating,
       watchedEpisodes: watchedEpisodes ?? this.watchedEpisodes,
+      episodeMinutes: episodeMinutes,
     );
   }
 }

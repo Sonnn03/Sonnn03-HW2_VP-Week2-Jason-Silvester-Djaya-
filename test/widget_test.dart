@@ -6,7 +6,7 @@ import 'package:homework2/features/models/drama.dart';
 import 'package:homework2/features/models/review.dart';
 import 'package:homework2/features/presentation/watchlist_screen.dart';
 import 'package:homework2/features/presentation/widgets/drama_card.dart';
-import 'package:homework2/features/presentation/widgets/drama_detail_screen.dart';
+import 'package:homework2/features/presentation/drama_detail_screen.dart';
 import 'package:homework2/features/presentation/widgets/drama_poster.dart';
 import 'package:homework2/features/presentation/widgets/watchlist_empty_state.dart';
 

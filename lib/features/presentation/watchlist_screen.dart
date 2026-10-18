@@ -1,16 +1,14 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:homework2/core/theme/app_spacing.dart';
-import 'package:homework2/features/presentation/widgets/drama_detail_screen.dart';
-
-import '../data/drama_repository.dart';
-import '../models/drama.dart';
-import 'widgets/drama_card.dart';
-import 'widgets/tag_filter_chips.dart';
-import 'widgets/watchlist_empty_state.dart';
-import 'widgets/watchlist_loading.dart';
-import 'widgets/watchlist_search_bar.dart';
+import 'package:homework2/features/data/drama_repository.dart';
+import 'package:homework2/features/models/drama.dart';
+import 'package:homework2/features/presentation/drama_detail_screen.dart';
+import 'package:homework2/features/presentation/stats_screen.dart';
+import 'package:homework2/features/presentation/widgets/tag_filter_chips.dart';
+import 'package:homework2/features/presentation/widgets/watchlist_empty_state.dart';
+import 'package:homework2/features/presentation/widgets/watchlist_grid.dart';
+import 'package:homework2/features/presentation/widgets/watchlist_loading.dart';
+import 'package:homework2/features/presentation/widgets/watchlist_search_bar.dart';
 
 class WatchlistScreen extends StatefulWidget {
   const WatchlistScreen({
@@ -110,6 +108,12 @@ class _WatchlistScreenState extends State<WatchlistScreen> {
     );
   }
 
+  void _openStats() {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (_) => StatsScreen(dramas: _dramas)),
+    );
+  }
+
   int _columnsFor(double width) {
     if (width >= 900) return 3;
     if (width >= 600) return 2;
@@ -119,7 +123,16 @@ class _WatchlistScreenState extends State<WatchlistScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('My Drama Watchlist')),
+      appBar: AppBar(
+        title: const Text('My Drama Watchlist'),
+        actions: [
+          IconButton(
+            tooltip: 'Statistik tontonan',
+            icon: const Icon(Icons.bar_chart),
+            onPressed: _isLoading ? null : _openStats,
+          ),
+        ],
+      ),
       body: SafeArea(
         top: false,
         child: LayoutBuilder(
@@ -174,44 +187,12 @@ class _WatchlistScreenState extends State<WatchlistScreen> {
       ];
     }
 
-    Widget cardAt(int index) {
-      final drama = dramas[index];
-      return DramaCard(
-        drama: drama,
-        onTap: () => _openDetail(drama),
-        onEpisodeWatched: () => _onEpisodeWatched(drama.id),
-      );
-    }
-
-    if (columns == 1) {
-      return [
-        SliverPadding(
-          padding: const EdgeInsets.all(AppSpacing.md),
-          sliver: SliverList.separated(
-            itemCount: dramas.length,
-            separatorBuilder: (context, index) =>
-                const SizedBox(height: AppSpacing.sm),
-            itemBuilder: (context, index) => cardAt(index),
-          ),
-        ),
-      ];
-    }
-
-    final textScale =
-        math.max(1.0, MediaQuery.textScalerOf(context).scale(16) / 16);
     return [
-      SliverPadding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        sliver: SliverGrid.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: columns,
-            crossAxisSpacing: AppSpacing.md,
-            mainAxisSpacing: AppSpacing.md,
-            mainAxisExtent: 176 * textScale,
-          ),
-          itemCount: dramas.length,
-          itemBuilder: (context, index) => cardAt(index),
-        ),
+      WatchlistGrid(
+        dramas: dramas,
+        columns: columns,
+        onTap: _openDetail,
+        onEpisodeWatched: _onEpisodeWatched,
       ),
     ];
   }

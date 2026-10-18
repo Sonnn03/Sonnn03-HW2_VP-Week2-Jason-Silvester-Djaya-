@@ -10,19 +10,19 @@ class DramaRepository {
 
   List<Review> get _reviewPool => [
     Review(
-      author: 'Alya',
+      author: 'Juna',
       rating: 5,
       comment: 'Cerita yang menarik dan sangat menghibur.',
       date: '1 hari lalu',
     ),
     Review(
-      author: 'Bima',
+      author: 'Beki',
       rating: 4,
       comment: 'Alur ceritanya bagus dan para pemainnya hebat.',
       date: '3 hari lalu',
     ),
     Review(
-      author: 'Citra',
+      author: 'Mario',
       rating: 5,
       comment: 'Salah satu drama favorit saya.',
       date: '1 minggu lalu',
